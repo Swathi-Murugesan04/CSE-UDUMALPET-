@@ -1,0 +1,15 @@
+(() => {
+ const toggle=document.querySelector('.nav-toggle'),nav=document.querySelector('.nav');
+ if(toggle&&nav){toggle.addEventListener('click',()=>{const open=nav.classList.toggle('open');toggle.setAttribute('aria-expanded',String(open));});nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');toggle.setAttribute('aria-expanded','false');}));}
+ const items=document.querySelectorAll('.enter');
+ if('IntersectionObserver'in window){const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}}),{threshold:.08,rootMargin:'0px 0px -20px 0px'});items.forEach(el=>obs.observe(el));}else items.forEach(el=>el.classList.add('visible'));
+ const filters=[...document.querySelectorAll('[data-filter]')],cards=[...document.querySelectorAll('.course[data-kind]')],hint=document.querySelector('.category-hint');
+ const labels={computer:'Showing computer application courses.',programming:'Showing programming and data courses.',career:'Showing career skills courses.'};
+ function showCategory(key){filters.forEach(b=>{const active=b.dataset.filter===key;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});cards.forEach(card=>{card.hidden=card.dataset.kind!==key;});if(hint)hint.textContent=labels[key]+' Choose another category to explore its courses.';}
+ filters.forEach(btn=>btn.addEventListener('click',()=>showCategory(btn.dataset.filter)));
+ showCategory('computer');
+ document.querySelectorAll('[data-course]').forEach(a=>a.addEventListener('click',()=>{const select=document.getElementById('course');if(!select)return;const wanted=a.dataset.course;const option=[...select.options].find(o=>o.value===wanted||o.textContent.trim()===wanted);if(option)select.value=option.value;else if(wanted==='Java / Python')select.value='Java / Python';else if(wanted==='Tally / Excel')select.value='Tally / Excel';else if(wanted==='MDCA / HDCA')select.value='MDCA / HDCA';}));
+ const form=document.getElementById('enquiry-form'),status=document.getElementById('form-status');
+ if(form)form.addEventListener('submit',e=>{e.preventDefault();if(!form.reportValidity())return;const d=new FormData(form);const msg=`Hi CSE Computer Education, I would like to enquire about a course.\nName: ${String(d.get('name')).trim()}\nPhone: ${String(d.get('phone')).trim()}\nCourse: ${d.get('course')}\nPreferred mode: ${d.get('mode')}\nPlease share the latest syllabus, duration, batch schedule and a complete fee breakdown, including any registration, exam, materials or certificate charges.`;if(status)status.textContent='WhatsApp will open with your enquiry. Please review the message and press Send to contact CSE.';const url='https://wa.me/919080082772?text='+encodeURIComponent(msg);const win=window.open(url,'_blank','noopener,noreferrer');if(!win&&status)status.textContent='Pop-up blocked. Please use the WhatsApp enquiry button or call the institute directly.';});
+ const year=document.getElementById('year');if(year)year.textContent=new Date().getFullYear();
+})();
